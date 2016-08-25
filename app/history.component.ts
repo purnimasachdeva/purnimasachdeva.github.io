@@ -50,4 +50,8 @@ export class HistoryComponent {
     back() {
         this._router.navigate( [ 'Home' ] );
     }
+
+    logout() {
+        this._authService.logout();
+    }
 }
