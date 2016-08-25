@@ -55,6 +55,9 @@ System.register(['angular2/core', 'angular2/router'], function(exports_1, contex
                         this._router.navigate(['Login']);
                     }
                 };
+                AuthenticationService.prototype.getLoggedInUser = function () {
+                    return localStorage.getItem('user');
+                };
                 AuthenticationService = __decorate([
                     core_1.Injectable(), 
                     __metadata('design:paramtypes', [router_1.Router])

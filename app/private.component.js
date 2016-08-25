@@ -1,4 +1,4 @@
-System.register(['angular2/core', './authentication.service', './lock.service'], function(exports_1, context_1) {
+System.register(['angular2/core', './authentication.service', './lock.service', './history.service', 'angular2/router'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', './authentication.service', './lock.service'],
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, authentication_service_1, lock_service_1;
+    var core_1, authentication_service_1, lock_service_1, history_service_1, router_1;
     var PrivateComponent;
     return {
         setters:[
@@ -22,12 +22,20 @@ System.register(['angular2/core', './authentication.service', './lock.service'],
             },
             function (lock_service_1_1) {
                 lock_service_1 = lock_service_1_1;
+            },
+            function (history_service_1_1) {
+                history_service_1 = history_service_1_1;
+            },
+            function (router_1_1) {
+                router_1 = router_1_1;
             }],
         execute: function() {
             PrivateComponent = (function () {
-                function PrivateComponent(_authService, _lockService) {
+                function PrivateComponent(_authService, _lockService, _historyService, _router) {
                     this._authService = _authService;
                     this._lockService = _lockService;
+                    this._historyService = _historyService;
+                    this._router = _router;
                     this.lockID = '';
                     this.errorMsg = '';
                 }
@@ -44,6 +52,7 @@ System.register(['angular2/core', './authentication.service', './lock.service'],
                     }
                     else {
                         this.errorMsg = code;
+                        this._historyService.store(this.lockID, this._authService.getLoggedInUser());
                     }
                 };
                 PrivateComponent.prototype.giveup = function () {
@@ -53,16 +62,19 @@ System.register(['angular2/core', './authentication.service', './lock.service'],
                     else
                         this.errorMsg = '';
                 };
+                PrivateComponent.prototype.history = function () {
+                    this._router.navigate(['History']);
+                };
                 PrivateComponent.prototype.logout = function () {
                     this._authService.logout();
                 };
                 PrivateComponent = __decorate([
                     core_1.Component({
                         selector: 'login-form',
-                        providers: [authentication_service_1.AuthenticationService, lock_service_1.LockService],
-                        template: "\n            <div class=\"container\" >\n                <div class=\"content\">\n                    <div class=\"row\">\n                        <div class=\"input-field col s12\">\n                           <input [(ngModel)]=\"lockID\" id=\"lockID\" type=\"text\" >\n                           <label for=\"lockID\">Lock ID</label>\n                        </div>\n                    </div>\n                    <div>{{errorMsg}}</div>\n                    <br />\n                    <button (click)=\"rent()\" class=\"btn waves-effect waves-light\" name=\"rent\">Rent</button>\n                    <button (click)=\"giveup()\" class=\"btn waves-effect waves-light\" name=\"return\">Return</button>\n                    <button (click)=\"logout()\" class=\"btn waves-effect waves-light\" type=\"submit\" name=\"logout\">Logout</button>\n                </div>\n            </div>\n   "
+                        providers: [authentication_service_1.AuthenticationService, lock_service_1.LockService, history_service_1.HistoryService],
+                        template: "\n            <div class=\"container\" >\n                <div class=\"content\">\n                    <div class=\"row\">\n                        <div class=\"input-field col s12\">\n                           <input [(ngModel)]=\"lockID\" id=\"lockID\" type=\"text\" >\n                           <label for=\"lockID\">Lock ID</label>\n                        </div>\n                    </div>\n                    <div>{{errorMsg}}</div>\n                    <br />\n                    <button (click)=\"rent()\" class=\"btn waves-effect waves-light\" name=\"rent\">Rent</button>\n                    <button (click)=\"giveup()\" class=\"btn waves-effect waves-light\" name=\"return\">Return</button>\n                    <button (click)=\"history()\" class=\"btn waves-effect waves-light\" name=\"return\">History</button>\n                    <button (click)=\"logout()\" class=\"btn waves-effect waves-light\" type=\"submit\" name=\"logout\">Logout</button>\n                </div>\n            </div>\n   "
                     }), 
-                    __metadata('design:paramtypes', [authentication_service_1.AuthenticationService, lock_service_1.LockService])
+                    __metadata('design:paramtypes', [authentication_service_1.AuthenticationService, lock_service_1.LockService, history_service_1.HistoryService, router_1.Router])
                 ], PrivateComponent);
                 return PrivateComponent;
             }());

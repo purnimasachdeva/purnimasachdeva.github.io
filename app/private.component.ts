@@ -1,10 +1,12 @@
 import { Component, ElementRef }                         from 'angular2/core';
 import { AuthenticationService }                         from './authentication.service';
 import { LockService, ACQUIRED, NON_EXISTENT, DONE }     from './lock.service';
+import { HistoryService }                                from './history.service';
+import { Router }                                        from 'angular2/router';
 
 @Component( {
     selector: 'login-form',
-    providers: [ AuthenticationService, LockService ],
+    providers: [ AuthenticationService, LockService, HistoryService ],
     template: `
             <div class="container" >
                 <div class="content">
@@ -18,6 +20,7 @@ import { LockService, ACQUIRED, NON_EXISTENT, DONE }     from './lock.service';
                     <br />
                     <button (click)="rent()" class="btn waves-effect waves-light" name="rent">Rent</button>
                     <button (click)="giveup()" class="btn waves-effect waves-light" name="return">Return</button>
+                    <button (click)="history()" class="btn waves-effect waves-light" name="return">History</button>
                     <button (click)="logout()" class="btn waves-effect waves-light" type="submit" name="logout">Logout</button>
                 </div>
             </div>
@@ -28,7 +31,11 @@ export class PrivateComponent {
     public lockID = '';
     public errorMsg = '';
 
-    constructor( private _authService: AuthenticationService, private _lockService: LockService ) { }
+    constructor( private _authService: AuthenticationService,
+                 private _lockService: LockService,
+                 private _historyService: HistoryService,
+                 private _router: Router
+               ) { }
 
     ngOnInit() {
         this._authService.checkCredentials();
@@ -43,6 +50,7 @@ export class PrivateComponent {
           this.errorMsg = 'No such lock exists';
        } else {
           this.errorMsg = code;
+          this._historyService.store( this.lockID, this._authService.getLoggedInUser() );
        }
     }
 
@@ -52,6 +60,10 @@ export class PrivateComponent {
           this.errorMsg = 'Returned lock!';
        else
           this.errorMsg = '';
+    }
+
+    history() {
+       this._router.navigate( [ 'History'] );
     }
 
     logout() {
