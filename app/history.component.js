@@ -40,6 +40,9 @@ System.register(['angular2/core', './authentication.service', './history.service
                 HistoryComponent.prototype.back = function () {
                     this._router.navigate(['Home']);
                 };
+                HistoryComponent.prototype.logout = function () {
+                    this._authService.logout();
+                };
                 HistoryComponent = __decorate([
                     core_1.Component({
                         selector: 'login-form',
